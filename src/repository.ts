@@ -20,24 +20,6 @@ export class Repo {
         return result;
     }
 
-    private Insert(client, productId , name ,description ,imageUrl ,price ,size ,category, stockQuantity){
-        return new Promise((resolve , reject) => {
-
-            const db = client.db('CherrieCouture');
-
-            const productCollection = db.collection('Products');
-
-            const result = productCollection.({ _id: new ObjectID().generate() }, function (err, result) {
-                if (err) {
-                     reject(err); 
-                     return; 
-                    }
-                    resolve(result);
-            })
-
-        });
-    }
-
     private findOne(client, id: string): Promise<any> {
 
         return new Promise((resolve, reject) => {
