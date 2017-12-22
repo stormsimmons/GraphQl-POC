@@ -51,13 +51,13 @@ const rootQuery = new GraphQLObjectType({
                 id:{type: GraphQLInt}
             },
             resolve(parentValue,args){
-                return axios.default.get(`You API url here`).then(res => res.data[0]);
+                return axios.default.get(`http://statisticsapi.euromonitor.local/subscribers/subscribers/${args.id}?format=json`).then(res => res.data[0]);
             }
         },
         subscribers:{
             type: new GraphQLList(SubscriberType),
             resolve(){
-                return axios.default.get('You API url here')
+                return axios.default.get('http://statisticsapi.euromonitor.local/subscribers/subscribers?format=json')
                 .then(res =>res.data);
             }
         },
@@ -80,6 +80,29 @@ const rootQuery = new GraphQLObjectType({
     }
 });
 
+var mustationRoot = new GraphQLObjectType ({
+    name: 'Mutation',
+    fields: {
+        addProduct:{
+            type : ProductType,
+            args : {
+                ProductId :{type :GraphQLInt},
+                Name : {type :GraphQLString},
+                Description : {type :GraphQLString},
+                ImageUrl : {type :GraphQLString},
+                Price : {type :GraphQLString},
+                Size : {type :GraphQLString},
+                Category : {type :GraphQLInt},
+                StockQuantity : {type :GraphQLInt} 
+            },
+            resolve(parentValue ,args){
+                
+            }
+        }
+    }
+});
+
 export const schema = new GraphQLSchema({
-    query: rootQuery
+    query: rootQuery,
+        mutation: mustationRoot
 });

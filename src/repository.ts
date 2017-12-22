@@ -1,4 +1,4 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient, Db } from 'mongodb';
 import { ObjectId, ObjectID } from 'bson';
 
 export class Repo {
@@ -18,6 +18,24 @@ export class Repo {
         const result = await this.findOne(client , id);
 
         return result;
+    }
+
+    private Insert(client, productId , name ,description ,imageUrl ,price ,size ,category, stockQuantity){
+        return new Promise((resolve , reject) => {
+
+            const db = client.db('CherrieCouture');
+
+            const productCollection = db.collection('Products');
+
+            const result = productCollection.({ _id: new ObjectID().generate() }, function (err, result) {
+                if (err) {
+                     reject(err); 
+                     return; 
+                    }
+                    resolve(result);
+            })
+
+        });
     }
 
     private findOne(client, id: string): Promise<any> {
@@ -57,7 +75,7 @@ export class Repo {
         });
     }
 
-    private getClient(): Promise<any> {
+    private getClient(): Promise<Db> {
         return new Promise((resolve, reject) => {
             MongoClient.connect('mongodb://localhost:27017', (err, client) => {
                 if (err) {
