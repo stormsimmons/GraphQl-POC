@@ -9,7 +9,7 @@ import {
 import * as request from 'sync-request';
 import * as axios from 'axios'; 
 import { Repo } from './repository';
-import { GraphQLBoolean } from 'graphql/type/scalars';
+import { GraphQLBoolean, GraphQLFloat } from 'graphql/type/scalars';
 
 const repository = new Repo();
 
@@ -90,13 +90,20 @@ var mustationRoot = new GraphQLObjectType ({
                 Name : {type :GraphQLString},
                 Description : {type :GraphQLString},
                 ImageUrl : {type :GraphQLString},
-                Price : {type :GraphQLString},
+                Price : {type :GraphQLFloat},
                 Size : {type :GraphQLString},
-                Category : {type :GraphQLInt},
+                Category : {type :GraphQLString},
                 StockQuantity : {type :GraphQLInt} 
             },
             resolve(parentValue ,args){
-                
+                 repository.addOne( args.ProductId ,
+                    args.Name ,
+                    args.Description ,
+                    args.ImageUrl ,
+                    args.Price  ,
+                    args.Size  ,
+                    args.Category  ,
+                    args.StockQuantity );
             }
         }
     }
