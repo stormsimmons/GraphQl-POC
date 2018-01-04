@@ -37,7 +37,7 @@ export class Repo {
 
             const result = productCollection.insertOne({
                 _id: new ObjectID(),
-                ProductId :productId,
+                ProductId :productId, 
                 Name : name,
                 Description : description,
                 ImageUrl : imageUrl,
