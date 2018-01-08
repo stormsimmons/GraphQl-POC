@@ -1,5 +1,6 @@
 import { MongoClient, Db } from 'mongodb';
 import { ObjectId, ObjectID } from 'bson';
+import { Product } from './models/product';
 
 export class Repo {
 
@@ -15,42 +16,34 @@ export class Repo {
     public async getOne(id: string){
         const client = await this.getClient();
 
-        const result = await this.findOne(client , id);
+        const result = await this.findOne(client, id);
 
         return result;
     }
 
-    public async addOne(productId , name , description , imageUrl , price , size ,  category , stockQuantity){
+    public async addOne(product : Product) {
         const client = await this.getClient();
 
-        const result = await this.insert(client, productId , name , description , imageUrl , price , size ,  category , stockQuantity);
-        
+        const result = await this.insert(client, product);
         return result;
     }
 
-    private insert(client, productId , name , description , imageUrl , price , size ,  category , stockQuantity) {
-    
+    private insert(client,product:Product) {
+
         return new Promise((resolve, reject) => {
             const db = client.db('CherrieCouture');
 
             const productCollection = db.collection('Products');
 
-            const result = productCollection.insertOne({
-                _id: new ObjectID(),
-                ProductId :productId, 
-                Name : name,
-                Description : description,
-                ImageUrl : imageUrl,
-                Price : price,
-                Size : size,
-                Category : category,
-                StockQuantity :  stockQuantity
-            },function(err, result){
+            product._id = new ObjectID();
+
+            const result = productCollection.insertOne(product , 
+                function (err, result) {
                 if (err) {
-                    reject(err); 
-                    return; 
-                   }
-                   resolve(result);
+                    reject(err);
+                    return;
+                }
+                resolve(result);
             });
         });
     }
@@ -60,17 +53,17 @@ export class Repo {
         return new Promise((resolve, reject) => {
 
             const db = client.db('CherrieCouture');
-            
-            
-            
+
+
+
             const productCollection = db.collection('Products');
 
             const result = productCollection.findOne({ _id: new ObjectID(id) }, function (err, result) {
                 if (err) {
-                     reject(err); 
-                     return; 
-                    }
-                    resolve(result);
+                    reject(err);
+                    return;
+                }
+                resolve(result);
             })
 
         });

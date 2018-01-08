@@ -10,6 +10,7 @@ import * as request from 'sync-request';
 import * as axios from 'axios'; 
 import { Repo } from './repository';
 import { GraphQLBoolean, GraphQLFloat } from 'graphql/type/scalars';
+import { Product } from './models/product';
 
 const repository = new Repo();
 
@@ -80,7 +81,7 @@ const rootQuery = new GraphQLObjectType({
     }
 });
 
-var mustationRoot = new GraphQLObjectType ({
+var mutationRoot = new GraphQLObjectType ({
     name: 'Mutation',
     fields: {
         addProduct:{
@@ -96,14 +97,18 @@ var mustationRoot = new GraphQLObjectType ({
                 StockQuantity : {type :GraphQLInt} 
             },
             resolve(parentValue ,args){
-                 repository.addOne( args.ProductId ,
-                    args.Name ,
-                    args.Description ,
-                    args.ImageUrl ,
-                    args.Price  ,
-                    args.Size  ,
-                    args.Category  ,
-                    args.StockQuantity );
+
+                var product = new Product();
+                product.ProductId  = args.ProductId;
+                product.Name = args.Name;
+                product.Description = args.Description;
+                product.ImageUrl = args.ImageUrl;
+                product.Price = args.Price;
+                product.Size = args.Size;
+                product.Category = args.Category;
+                product.StockQuantity = args.StockQuantity;
+
+                repository.addOne( product );
             }
         }
     }
@@ -111,5 +116,5 @@ var mustationRoot = new GraphQLObjectType ({
 
 export const schema = new GraphQLSchema({
     query: rootQuery,
-        mutation: mustationRoot
+        mutation: mutationRoot
 });
