@@ -22,10 +22,10 @@ const ProductType = new GraphQLObjectType({
         Name : {type :GraphQLString},
         Description : {type :GraphQLString},
         ImageUrl : {type :GraphQLString},
-        Price : {type :GraphQLString},
-        Size : {type :GraphQLString},
+        Price : {type :GraphQLFloat},
+        Size : {type :GraphQLString}, 
         Category : {type :GraphQLInt},
-        StockQuantity : {type :GraphQLInt} 
+        StockQuantity : {type :GraphQLInt}  
     })
 });
 
