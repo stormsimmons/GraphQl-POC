@@ -5,17 +5,18 @@ import {
     GraphQLString,
     GraphQLList,
     GraphQLID
-} from 'graphql';
-import * as request from 'sync-request';
-import * as axios from 'axios'; 
-import { Repo } from './repository';
-import { GraphQLBoolean, GraphQLFloat } from 'graphql/type/scalars';
-import { Product } from './models/product';
+} from "graphql";
+import * as request from "sync-request";
+import * as axios from "axios";
+import { Repo } from "./repository";
+import { GraphQLBoolean, GraphQLFloat } from "graphql/type/scalars";
+import { Product } from "./models/product";
+import { ClientRequestArgs } from "http";
 
-const repository = new Repo();
+const repository: Repo = new Repo();
 
-const ProductType = new GraphQLObjectType({
-    name : 'Product',
+const ProductType: GraphQLObjectType = new GraphQLObjectType({
+    name : "Product",
     fields: () =>({
         _id : {type : GraphQLID},
         ProductId :{type :GraphQLInt},
@@ -23,14 +24,14 @@ const ProductType = new GraphQLObjectType({
         Description : {type :GraphQLString},
         ImageUrl : {type :GraphQLString},
         Price : {type :GraphQLFloat},
-        Size : {type :GraphQLString}, 
+        Size : {type :GraphQLString},
         Category : {type :GraphQLInt},
-        StockQuantity : {type :GraphQLInt}  
+        StockQuantity : {type :GraphQLInt}
     })
 });
 
-const SubscriberType = new GraphQLObjectType({
-    name : 'Subscriber',
+const SubscriberType: GraphQLObjectType = new GraphQLObjectType({
+    name : "Subscriber",
     fields: () => ({
         name : {type : GraphQLString },
         id : {type : GraphQLInt},
@@ -43,28 +44,29 @@ const SubscriberType = new GraphQLObjectType({
     })
 });
 
-const rootQuery = new GraphQLObjectType({
-    name: 'root',
+const rootQuery: GraphQLObjectType = new GraphQLObjectType({
+    name: "root",
     fields : {
         subscriber: {
             type: SubscriberType,
             args : {
                 id:{type: GraphQLInt}
             },
-            resolve(parentValue,args){
-                return axios.default.get(`http://statisticsapi.euromonitor.local/subscribers/subscribers/${args.id}?format=json`).then(res => res.data[0]);
+            resolve(parentValue: any,args: any):Promise<any> {
+                return axios.default.get(`http://statisticsapi.euromonitor.local/subscribers/subscribers/${args.id}?format=json`)
+                .then(res => res.data[0]);
             }
         },
         subscribers:{
             type: new GraphQLList(SubscriberType),
-            resolve(){
-                return axios.default.get('http://statisticsapi.euromonitor.local/subscribers/subscribers?format=json')
+            resolve(): Promise<any> {
+                return axios.default.get("http://statisticsapi.euromonitor.local/subscribers/subscribers?format=json")
                 .then(res =>res.data);
             }
         },
         products: {
             type: new GraphQLList(ProductType),
-             resolve(){
+             resolve(): Promise<any> {
                   return repository.getAll().then(res => res);
              }
         },
@@ -73,7 +75,7 @@ const rootQuery = new GraphQLObjectType({
             args : {
                 id: {type : GraphQLString}
             },
-            resolve(parentValue, args){
+            resolve(parentValue:any, args:any):Promise<any> {
                 return repository.getOne(args.id).then(res => res);
             }
         }
@@ -81,8 +83,8 @@ const rootQuery = new GraphQLObjectType({
     }
 });
 
-var mutationRoot = new GraphQLObjectType ({
-    name: 'Mutation',
+var mutationRoot:GraphQLObjectType = new GraphQLObjectType ({
+    name: "Mutation",
     fields: {
         addProduct:{
             type : ProductType,
@@ -94,11 +96,11 @@ var mutationRoot = new GraphQLObjectType ({
                 Price : {type :GraphQLFloat},
                 Size : {type :GraphQLString},
                 Category : {type :GraphQLString},
-                StockQuantity : {type :GraphQLInt} 
+                StockQuantity : {type :GraphQLInt}
             },
-            resolve(parentValue ,args){
+            resolve(parentValue:any ,args:any):void {
 
-                var product = new Product();
+                var product:Product = new Product();
                 product.ProductId  = args.ProductId;
                 product.Name = args.Name;
                 product.Description = args.Description;
@@ -114,7 +116,7 @@ var mutationRoot = new GraphQLObjectType ({
     }
 });
 
-export const schema = new GraphQLSchema({
+export const schema:GraphQLSchema = new GraphQLSchema({
     query: rootQuery,
         mutation: mutationRoot
 });
